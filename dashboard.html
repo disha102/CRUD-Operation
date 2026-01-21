@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box {
+            width: 750px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 95%;
+            padding: 6px;
+            margin: 5px 0;
+        }
+
+        button {
+            padding: 7px 15px;
+            margin-top: 5px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            background: #4CAF50;
+        }
+
+        .clear { background: #555; }
+        .delete { background: red; }
+        .edit { background: orange; }
+
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        .topper { background: #fff3cd; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>Student Record Dashboard</h2>
+
+Roll No:
+<input type="text" id="roll">
+
+Name:
+<input type="text" id="sname">
+
+Standard:
+<input type="text" id="std">
+
+Marks:
+<input type="number" id="marks">
+
+<button onclick="add()">Add / Update Student</button>
+<button class="clear" onclick="clearAll()">Clear All</button>
+
+<p><b>Total Students:</b> <span id="count">0</span></p>
+
+<table>
+<tr>
+    <th>Roll No</th>
+    <th>Name</th>
+    <th>Standard</th>
+    <th>Marks</th>
+    <th>Result</th>
+    <th>Action</th>
+</tr>
+<tbody id="table"></tbody>
+</table>
+
+</div>
+
+<script>
+let editRow = null;
+
+function add() {
+    var r = document.getElementById("roll").value;
+    var n = document.getElementById("sname").value;
+    var s = document.getElementById("std").value;
+    var m = document.getElementById("marks").value;
+
+    if (r=="" || n=="" || s=="" || m=="") {
+        alert("Enter all details");
+        return;
+    }
+
+    var result = (m >= 40) ? "Pass" : "Fail";
+    var cls = (m >= 40) ? "pass" : "fail";
+
+    var row;
+    if (editRow == null) {
+        row = table.insertRow();
+    } else {
+        row = editRow;
+        editRow = null;
+    }
+
+    row.innerHTML =
+        "<td>"+r+"</td>"+
+        "<td>"+n+"</td>"+
+        "<td>"+s+"</td>"+
+        "<td>"+m+"</td>"+
+        "<td class='"+cls+"'>"+result+"</td>"+
+        "<td>"+
+        "<button class='edit' onclick='edit(this)'>Edit</button> "+
+        "<button class='delete' onclick='del(this)'>Delete</button>"+
+        "</td>";
+
+    clearInputs();
+    updateCount();
+    highlightTopper();
+}
+
+function edit(btn) {
+    editRow = btn.parentElement.parentElement;
+    roll.value = editRow.cells[0].innerHTML;
+    sname.value = editRow.cells[1].innerHTML;
+    std.value = editRow.cells[2].innerHTML;
+    marks.value = editRow.cells[3].innerHTML;
+}
+
+function del(btn) {
+    btn.parentElement.parentElement.remove();
+    updateCount();
+    highlightTopper();
+}
+
+function clearAll() {
+    table.innerHTML = "";
+    updateCount();
+}
+
+function updateCount() {
+    count.innerHTML = table.rows.length;
+}
+
+function clearInputs() {
+    roll.value = "";
+    sname.value = "";
+    std.value = "";
+    marks.value = "";
+}
+
+function highlightTopper() {
+    let rows = table.rows;
+    let max = -1;
+
+    for (let i=0; i<rows.length; i++) {
+        rows[i].classList.remove("topper");
+        let mk = parseInt(rows[i].cells[3].innerHTML);
+        if (mk > max) max = mk;
+    }
+
+    for (let i=0; i<rows.length; i++) {
+        if (parseInt(rows[i].cells[3].innerHTML) == max) {
+            rows[i].classList.add("topper");
+        }
+    }
+}
+</script>
+
+</body>
+</html>
